@@ -197,7 +197,7 @@ st.markdown("""
         outline: none !important;
     }
 
-    /* 【核心修复】按钮行容器 - 使用 flexbox 完美对齐 */
+    /* 【核心修复】按钮行容器 - 强制水平布局 */
     .btn-row-wrapper {
         display: flex !important;
         align-items: center !important;
@@ -205,14 +205,16 @@ st.markdown("""
         gap: 2.5rem !important;
         width: 100% !important;
         flex-wrap: nowrap !important;
-        margin-top: 1rem;
+        margin-top: 1rem !important;
+        flex-direction: row !important;
     }
 
-    /* 减少按钮容器 */
-    .btn-reduce-wrapper {
+    /* Streamlit 列的覆盖 - 强制横向布局 */
+    .btn-row-wrapper > div[data-testid="column"] {
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
+        flex: 0 1 auto !important;
         width: auto !important;
         flex-shrink: 0 !important;
     }
@@ -237,15 +239,6 @@ st.markdown("""
         line-height: 1 !important;
         white-space: nowrap !important;
         display: inline-block !important;
-    }
-
-    /* 加号按钮容器 */
-    .btn-add-wrapper {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        width: auto !important;
-        flex-shrink: 0 !important;
     }
   
     /* ============= 【修复】侧边栏字体 ============= */
@@ -426,6 +419,32 @@ st.markdown("""
         .price-tag {
             font-size: 1.1rem;
         }
+        
+        /* 【手机端核心修复】强制按钮行水平布局 */
+        .btn-row-wrapper {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 2rem !important;
+            width: 100% !important;
+            flex-wrap: nowrap !important;
+            flex-direction: row !important;
+            margin-top: 1rem !important;
+        }
+        
+        .btn-row-wrapper > div[data-testid="column"] {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex: 0 0 auto !important;
+            width: auto !important;
+            max-width: none !important;
+            min-width: auto !important;
+            padding-right: 0 !important;
+            padding-left: 0 !important;
+            flex-shrink: 0 !important;
+        }
+        
         button[data-testid^="baseButton-reduce_"],
         button[data-testid^="baseButton-add_"] {
             width: 18px !important;
@@ -442,9 +461,6 @@ st.markdown("""
         }
         .count-number {
             font-size: 1rem !important;
-        }
-        .btn-row-wrapper {
-            gap: 1.5rem !important;
         }
         [data-testid="stSidebar"] .stRadio > div > label {
             font-size: 1.25rem !important;
@@ -668,35 +684,29 @@ for idx, dish in enumerate(current_dishes):
         </div>
         """, unsafe_allow_html=True)
       
-        # 【核心修复】按钮行 - 使用 HTML 直接渲染实现完美对齐
+        # 【核心修复】按钮行 - 使用 HTML div 强制水平布局
         current_count = st.session_state.cart.get(dish["id"], 0)
         
-        # 构建减少按钮
-        reduce_placeholder = st.empty()
-        count_placeholder = st.empty()
-        add_placeholder = st.empty()
+        st.markdown('<div class="btn-row-wrapper">', unsafe_allow_html=True)
         
-        with st.container():
-            st.markdown('<div class="btn-row-wrapper">', unsafe_allow_html=True)
-            
-            reduce_col, count_col, add_col = st.columns([1, 1, 1], gap="large")
-            
-            with reduce_col:
-                if current_count > 0:
-                    if st.button("➖", key=f"reduce_{dish['id']}", help="减少"):
-                        reduce_from_cart(dish["id"])
-                        st.rerun()
-            
-            with count_col:
-                if current_count > 0:
-                    st.markdown(f'<div class="count-display"><span class="count-number">{current_count}</span></div>', unsafe_allow_html=True)
-            
-            with add_col:
-                if st.button("➕", key=f"add_{dish['id']}", help="增加"):
-                    add_to_cart(dish["id"])
+        btn_cols = st.columns([1, 1, 1])
+        
+        with btn_cols[0]:
+            if current_count > 0:
+                if st.button("➖", key=f"reduce_{dish['id']}", help="减少"):
+                    reduce_from_cart(dish["id"])
                     st.rerun()
-            
-            st.markdown('</div>', unsafe_allow_html=True)
+        
+        with btn_cols[1]:
+            if current_count > 0:
+                st.markdown(f'<div class="count-display"><span class="count-number">{current_count}</span></div>', unsafe_allow_html=True)
+        
+        with btn_cols[2]:
+            if st.button("➕", key=f"add_{dish['id']}", help="增加"):
+                add_to_cart(dish["id"])
+                st.rerun()
+        
+        st.markdown('</div>', unsafe_allow_html=True)
       
         st.markdown('</div>', unsafe_allow_html=True)
 
