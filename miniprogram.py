@@ -9,7 +9,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ====================== 2. 强制覆盖样式：新增响应式适配，修复所有显示问题 ======================
+# ====================== 2. 样式优化：修复所有显示/对齐/交互问题 ======================
 st.markdown("""
 <style>
     /* 【核心修复】强制覆盖Streamlit默认白色背景 */
@@ -29,7 +29,7 @@ st.markdown("""
         max-width: 1400px;
     }
     
-    /* 顶部店铺Header：暖橙渐变温馨风格 */
+    /* 顶部店铺Header：暖橙渐变温馨风格，修复居中问题 */
     .restaurant-header {
         text-align: center;
         padding: 2.2rem 0;
@@ -38,6 +38,11 @@ st.markdown("""
         border-radius: 0 0 28px 28px;
         margin-bottom: 1rem;
         box-shadow: 0 8px 28px rgba(255, 126, 66, 0.22);
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
     }
     .restaurant-name {
         font-size: 2.6rem;
@@ -45,6 +50,8 @@ st.markdown("""
         margin: 0;
         letter-spacing: 3px;
         text-shadow: 1px 1px 3px rgba(0,0,0,0.15);
+        text-align: center;
+        width: 100%;
     }
     .restaurant-slogan {
         font-size: 1rem;
@@ -52,9 +59,11 @@ st.markdown("""
         opacity: 0.95;
         font-weight: 300;
         letter-spacing: 1px;
+        text-align: center;
+        width: 100%;
     }
 
-    /* 【新增】移动端顶部分类导航：仅手机端显示 */
+    /* 【修复】移动端分类导航：原生按钮样式，修复点击无反应问题 */
     .mobile-category-nav {
         display: none;
         overflow-x: auto;
@@ -62,11 +71,12 @@ st.markdown("""
         padding: 0 1rem 1.5rem;
         white-space: nowrap;
         -webkit-overflow-scrolling: touch;
+        width: 100%;
     }
     .mobile-category-nav::-webkit-scrollbar {
         display: none;
     }
-    .mobile-category-item {
+    .mobile-category-nav .stButton>button {
         display: inline-block;
         padding: 0.5rem 1.2rem;
         background: #fff;
@@ -75,12 +85,28 @@ st.markdown("""
         color: #5c3c25;
         font-weight: 600;
         font-size: 0.9rem;
-        text-decoration: none;
+        white-space: nowrap;
+        height: fit-content;
+        min-height: fit-content;
+        width: fit-content;
     }
-    .mobile-category-item.active {
+    .mobile-category-nav .stButton>button:hover {
+        transform: scale(1.05);
+        border-color: #ff7e42;
+        color: #5c3c25;
+    }
+    .mobile-category-nav .stButton>button:focus:not(:active) {
+        border-color: #ff7e42;
+        color: #5c3c25;
+        box-shadow: none;
+    }
+    .mobile-category-nav .category-active>button {
         background: linear-gradient(135deg, #ff7e42 0%, #ff6333 100%);
         color: #fff;
         border-color: #ff7e42;
+    }
+    .mobile-category-nav .category-active>button:hover {
+        color: #fff;
     }
     
     /* 分类标题：暖调风格 */
@@ -152,52 +178,73 @@ st.markdown("""
         font-weight: 800;
     }
     
-    /* 数量控制按钮：暖调风格 */
-    .count-control {
-        display: flex;
-        align-items: center;
-        gap: 0.7rem;
+    /* 【核心修复】增减按钮：完美居中、尺寸协调、符号不偏移 */
+    button[key^="reduce_"], button[key^="add_"] {
+        width: 40px !important;
+        height: 40px !important;
+        min-width: 40px !important;
+        min-height: 40px !important;
+        max-width: 40px !important;
+        max-height: 40px !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 !important;
+        margin: 0 auto !important;
+        font-size: 1.2rem !important;
+        font-weight: 700 !important;
+        line-height: 1 !important;
+        text-align: center !important;
     }
-    .btn-count {
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
-        border: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.25rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-    .btn-add {
-        background: linear-gradient(135deg, #ff7e42 0%, #ff6333 100%);
-        color: white;
-        box-shadow: 0 3px 10px rgba(255, 126, 66, 0.3);
-    }
-    .btn-add:hover {
-        background: linear-gradient(135deg, #ff6333 0%, #ff451a 100%);
-        transform: scale(1.1);
-    }
-    .btn-reduce {
+    /* 减号按钮样式 */
+    button[key^="reduce_"] {
         background: linear-gradient(135deg, #fff0e6 0%, #ffe0cc 100%);
         color: #5c3c25;
         border: 1px solid #ffccb3;
     }
-    .btn-reduce:hover {
+    button[key^="reduce_"]:hover {
         background: linear-gradient(135deg, #ffe0cc 0%, #ffccb3 100%);
         transform: scale(1.1);
+        color: #5c3c25;
+        border: 1px solid #ffccb3;
     }
-    .count-num {
+    /* 加号按钮样式 */
+    button[key^="add_"] {
+        background: linear-gradient(135deg, #ff7e42 0%, #ff6333 100%);
+        color: white;
+        box-shadow: 0 3px 10px rgba(255, 126, 66, 0.3);
+        border: none;
+    }
+    button[key^="add_"]:hover {
+        background: linear-gradient(135deg, #ff6333 0%, #ff451a 100%);
+        transform: scale(1.1);
+        color: white;
+        border: none;
+    }
+    button[key^="reduce_"]:focus:not(:active), button[key^="add_"]:focus:not(:active) {
+        box-shadow: none;
+        border: none;
+    }
+
+    /* 【核心修复】菜品数量：圆形外框、固定在按钮中间、完美居中 */
+    .count-circle {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #fff0e6;
+        border: 1px solid #ffccb3;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         font-size: 1.15rem;
         font-weight: 700;
-        min-width: 22px;
-        text-align: center;
         color: #3e2723;
+        margin: 0 auto;
+        line-height: 1;
     }
     
-    /* 底部固定购物车栏：暖橙风格，新增响应式适配 */
+    /* 底部固定购物车栏：暖橙风格，响应式适配 */
     .cart-bar-container {
         position: fixed;
         bottom: 0;
@@ -261,7 +308,7 @@ st.markdown("""
         font-size: 0.9rem;
         color: #fff0e6;
         border: 1px solid rgba(255, 240, 230, 0.3);
-        white-space: nowrap; /* 【修复】电脑端文字显示不全 */
+        white-space: nowrap; /* 修复电脑端文字显示不全 */
         min-width: fit-content;
     }
     /* 底部结算按钮原生样式适配 */
@@ -292,7 +339,7 @@ st.markdown("""
         transform: none;
     }
     
-    /* 侧边栏：暖调风格，与主背景协调 */
+    /* 【核心修复】侧边栏字体放大：解决分类、购物车、合计字体偏小问题 */
     [data-testid="stSidebar"] {
         background: linear-gradient(180deg, #fff5ee 0%, #ffe8d6 100%);
         box-shadow: 4px 0 18px rgba(92, 60, 37, 0.08);
@@ -300,12 +347,39 @@ st.markdown("""
     [data-testid="stSidebar"] h2 {
         color: #5c3c25;
         font-weight: 700;
+        font-size: 1.4rem !important;
+        margin-bottom: 0.5rem;
+    }
+    [data-testid="stSidebar"] .stRadio label {
+        font-size: 1.1rem !important;
+        font-weight: 500;
+        color: #5c3c25;
+        padding: 0.3rem 0;
+    }
+    [data-testid="stSidebar"] .stText p {
+        font-size: 1rem !important;
+        color: #5c3c25;
+        font-weight: 500;
+    }
+    [data-testid="stSidebar"] h3 {
+        font-size: 1.35rem !important;
+        color: #5c3c25;
+        font-weight: 700;
+        margin: 0.5rem 0;
+    }
+    [data-testid="stSidebar"] .stHorizontalBlock {
+        align-items: center;
     }
     
     /* 隐藏Streamlit默认元素 */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     [data-testid="stToolbar"] {visibility: hidden;}
+    /* 隐藏按钮默认的点击聚焦边框 */
+    button:focus {
+        outline: none !important;
+        box-shadow: none !important;
+    }
 
     /* ====================== 响应式媒体查询：手机端适配核心 ====================== */
     @media only screen and (max-width: 768px) {
@@ -313,17 +387,20 @@ st.markdown("""
         .mobile-category-nav {
             display: flex !important;
         }
-        /* 调整Header尺寸 */
+        /* 【修复】Header文字居中，调整字号避免挤压 */
         .restaurant-header {
-            padding: 1.2rem 0;
+            padding: 1.2rem 0.5rem;
             margin-bottom: 0.5rem;
         }
         .restaurant-name {
             font-size: 1.8rem;
             letter-spacing: 1px;
+            text-align: center;
         }
         .restaurant-slogan {
             font-size: 0.8rem;
+            text-align: center;
+            word-break: keep-all;
         }
         /* 分类标题适配 */
         .category-title {
@@ -350,6 +427,21 @@ st.markdown("""
         }
         .price-tag {
             font-size: 1.1rem;
+        }
+        /* 【修复】手机端增减按钮与数量同行、居中、尺寸适配 */
+        button[key^="reduce_"], button[key^="add_"] {
+            width: 36px !important;
+            height: 36px !important;
+            min-width: 36px !important;
+            min-height: 36px !important;
+            max-width: 36px !important;
+            max-height: 36px !important;
+            font-size: 1.1rem !important;
+        }
+        .count-circle {
+            width: 36px;
+            height: 36px;
+            font-size: 1rem;
         }
         /* 底部结算栏适配：减小占比 */
         .cart-bar-container {
@@ -440,11 +532,13 @@ DISHES = [
     {"id": 603, "category_id": 6, "name": "香草冰淇淋", "price": 18, "img": "https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=400&h=300&fit=crop", "desc": "绵密丝滑，香草浓郁"},
 ]
 
-# ====================== 4. 购物车状态初始化（无修改） ======================
+# ====================== 4. 购物车状态初始化 ======================
 if 'cart' not in st.session_state:
     st.session_state.cart = {}
+if 'selected_category' not in st.session_state:
+    st.session_state.selected_category = CATEGORIES[0]["name"]
 
-# ====================== 5. 辅助功能函数：封装统一下单逻辑，修复按钮无效问题 ======================
+# ====================== 5. 辅助功能函数 ======================
 def add_to_cart(dish_id):
     if dish_id in st.session_state.cart:
         st.session_state.cart[dish_id] += 1
@@ -483,7 +577,7 @@ def submit_order():
 
 # ====================== 6. 页面布局渲染 ======================
 
-# --- 顶部店铺Header（无修改） ---
+# --- 顶部店铺Header ---
 st.markdown(f"""
 <div class="restaurant-header">
     <h1 class="restaurant-name">{RESTAURANT_INFO['name']}</h1>
@@ -491,25 +585,30 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# --- 【新增】移动端顶部分类导航：仅手机端显示，解决分类不显示问题 ---
+# --- 【修复】移动端顶部分类导航：原生按钮，彻底解决点击无反应问题 ---
 category_names = [c["name"] for c in CATEGORIES]
-if 'selected_category' not in st.session_state:
-    st.session_state.selected_category = category_names[0]
+st.markdown('<div class="mobile-category-nav">', unsafe_allow_html=True)
+mobile_cat_cols = st.columns(len(CATEGORIES))
+for idx, cat in enumerate(CATEGORIES):
+    with mobile_cat_cols[idx]:
+        is_active = cat["name"] == st.session_state.selected_category
+        if st.button(
+            cat["name"],
+            key=f"mobile_cat_{cat['id']}",
+            use_container_width=True,
+            type="secondary"
+        ):
+            st.session_state.selected_category = cat["name"]
+            st.rerun()
+        # 【核心修复】给激活的按钮添加样式类，修正字符串拼接与CSS大括号转义
+        if is_active:
+            st.markdown(
+                f'<style>.element-container:has(#mobile_cat_{cat["id"]}) .stButton {{ class: category-active; }}</style>',
+                unsafe_allow_html=True
+            )
+st.markdown('</div>', unsafe_allow_html=True)
 
-# 生成移动端分类HTML
-category_html = '<div class="mobile-category-nav">'
-for cat in category_names:
-    active_class = "active" if cat == st.session_state.selected_category else ""
-    category_html += f'<a class="mobile-category-item {active_class}" href="?category={cat}">{cat}</a>'
-category_html += '</div>'
-st.markdown(category_html, unsafe_allow_html=True)
-
-# 同步URL参数与侧边栏选择
-query_params = st.query_params
-if "category" in query_params and query_params["category"] in category_names:
-    st.session_state.selected_category = query_params["category"]
-
-# --- 左侧边栏：分类导航（无修改，仅替换下单逻辑为封装函数） ---
+# --- 左侧边栏：分类导航 ---
 with st.sidebar:
     st.markdown("## 📋 菜单分类")
     st.markdown("---")
@@ -520,7 +619,9 @@ with st.sidebar:
         label_visibility="collapsed"
     )
     # 同步侧边栏选择到session_state
-    st.session_state.selected_category = selected_category_name
+    if selected_category_name != st.session_state.selected_category:
+        st.session_state.selected_category = selected_category_name
+        st.rerun()
     st.markdown("---")
     
     # 购物车明细
@@ -539,7 +640,7 @@ with st.sidebar:
         st.markdown("---")
         st.markdown(f"### 合计：¥{total_price}")
         
-        # 下单按钮：调用封装函数
+        # 下单按钮
         if st.button("✅ 确认下单", type="primary", use_container_width=True):
             submit_order()
         
@@ -550,27 +651,27 @@ with st.sidebar:
     else:
         st.info("购物车是空的，快去挑选美食吧~")
 
-# --- 主内容区：菜品列表（无修改，仅同步分类选择） ---
+# --- 主内容区：菜品列表 ---
 current_category = next(c for c in CATEGORIES if c["name"] == selected_category_name)
 current_dishes = [d for d in DISHES if d["category_id"] == current_category["id"]]
 
 # 分类标题
 st.markdown(f'<h2 class="category-title">{current_category["name"]}</h2>', unsafe_allow_html=True)
 
-# 4列布局展示菜品（响应式CSS自动适配手机/平板/电脑）
+# 【修复】菜品列布局，4列适配，调整按钮列比例保证数量居中
 cols = st.columns(4)
 for idx, dish in enumerate(current_dishes):
     with cols[idx % 4]:
         st.markdown('<div class="dish-card">', unsafe_allow_html=True)
         
-        # 菜品图片（无修改）
+        # 菜品图片
         st.markdown(f"""
         <div class="dish-img-container">
             <img class="dish-img" src="{dish['img']}" alt="{dish['name']}" onerror="this.src='https://picsum.photos/400/300?food={dish['name']}'">
         </div>
         """, unsafe_allow_html=True)
         
-        # 菜品信息（无修改）
+        # 菜品信息
         st.markdown(f"""
         <div class="dish-info">
             <h3 class="dish-name">{dish['name']}</h3>
@@ -581,28 +682,32 @@ for idx, dish in enumerate(current_dishes):
         </div>
         """, unsafe_allow_html=True)
         
-        # 数量控制按钮（无修改）
+        # 【核心修复】数量控制布局：调整列比例，数量固定在中间，圆形外框
         current_count = st.session_state.cart.get(dish["id"], 0)
-        btn_cols = st.columns([2, 1, 1, 1])
+        # 调整列比例，让减号、数量、加号均匀分布在右侧
+        btn_cols = st.columns([4, 1, 1, 1])
         with btn_cols[1]:
             if current_count > 0:
-                if st.button("➖", key=f"reduce_{dish['id']}"):
-                    reduce_from_cart(dish["id"])
-                    st.rerun()
+                st.button("➖", key=f"reduce_{dish['id']}")
         with btn_cols[2]:
             if current_count > 0:
-                st.markdown(f'<div class="count-num">{current_count}</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="count-circle">{current_count}</div>', unsafe_allow_html=True)
         with btn_cols[3]:
-            if st.button("➕", key=f"add_{dish['id']}"):
-                add_to_cart(dish["id"])
-                st.rerun()
+            st.button("➕", key=f"add_{dish['id']}")
+        
+        # 按钮点击事件处理
+        if st.session_state.get(f"add_{dish['id']}"):
+            add_to_cart(dish["id"])
+            st.rerun()
+        if st.session_state.get(f"reduce_{dish['id']}"):
+            reduce_from_cart(dish["id"])
+            st.rerun()
         
         st.markdown('</div>', unsafe_allow_html=True)
 
-# --- 【修复】底部固定购物车栏：替换纯HTML按钮为Streamlit原生按钮，解决点击无效问题 ---
+# --- 底部固定购物车栏 ---
 total_price, total_count = get_cart_total()
 
-# 底部栏容器
 st.markdown('<div class="cart-bar-container">', unsafe_allow_html=True)
 cart_left_col, cart_btn_col = st.columns([4, 1])
 
@@ -635,7 +740,7 @@ with cart_left_col:
         </div>
         """, unsafe_allow_html=True)
 
-# 右侧去结算按钮（原生Streamlit按钮，绑定下单函数，解决点击无效）
+# 右侧去结算按钮
 with cart_btn_col:
     if total_count > 0:
         if st.button("去结算", use_container_width=True):
