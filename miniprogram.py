@@ -66,7 +66,7 @@ st.markdown("""
         line-height: 1.4;
     }
 
-    /* 顶部分类按钮 - 字体放大到1.3rem */
+    /* 顶部分类按钮 */
     .top-category-nav {
         display: flex;
         gap: 1.5rem;
@@ -112,7 +112,6 @@ st.markdown("""
         box-shadow: 0 6px 22px rgba(92, 60, 37, 0.09);
         transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         overflow: hidden;
-        height: 100%;
         border: 1px solid #fff0e6;
         display: flex;
         flex-direction: column;
@@ -160,94 +159,89 @@ st.markdown("""
         text-align: left;
         flex-grow: 1;
     }
-    .dish-bottom {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1rem;
-    }
     .price-tag {
         color: #d32f2f;
         font-size: 1.45rem;
         font-weight: 800;
+        margin-bottom: 1rem;
+    }
+
+    /* ============= 【核心】数量控制器 - 水平布局 ============= */
+    .qty-controller {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 0 !important;
+        width: 100% !important;
+        padding: 0.5rem 0 !important;
+        flex-wrap: nowrap !important;
+    }
+
+    /* 数量显示 - 居中 */
+    .qty-number {
+        font-size: 1.3rem !important;
+        font-weight: 700 !important;
+        color: #3e2723 !important;
+        min-width: 50px !important;
+        text-align: center !important;
+        line-height: 36px !important;
+        height: 36px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* 按钮容器强制inline */
+    .qty-controller > div {
+        display: inline-flex !important;
+        flex: 0 0 auto !important;
+    }
+
+    .qty-controller > div[data-testid="column"] {
+        width: auto !important;
+        flex: 0 0 auto !important;
+        min-width: 0 !important;
+        padding: 0 0.3rem !important;
+    }
+
+    /* 原始橙色渐变按钮风格 */
+    .qty-controller .stButton > button {
+        width: 36px !important;
+        height: 36px !important;
+        min-width: 36px !important;
+        min-height: 36px !important;
+        max-width: 36px !important;
+        max-height: 36px !important;
+        border-radius: 50% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        font-size: 1.0rem !important;
+        font-weight: 600 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        line-height: 1 !important;
+        background: linear-gradient(135deg, #ff7e42 0%, #ff9a56 100%) !important;
+        color: #fff !important;
+        border: none !important;
+        box-shadow: 0 3px 10px rgba(255, 126, 66, 0.3) !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .qty-controller .stButton > button:hover {
+        transform: scale(1.1) !important;
+        background: linear-gradient(135deg, #ff6333 0%, #ff451a 100%) !important;
+        box-shadow: 0 5px 15px rgba(255, 126, 66, 0.4) !important;
+    }
+
+    .qty-controller .stButton > button:active {
+        transform: scale(0.95) !important;
     }
   
-    /* ============= 【新风格】加减按钮容器 ============= */
-    .quantity-control {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 1.5rem;
-        width: 100%;
-        margin-top: 1rem;
-        padding: 0;
-    }
-
-    /* 减少按钮 */
-    .qty-btn-minus {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        border: 2px solid #ff7e42;
-        background-color: #ffffff;
-        color: #ff7e42;
-        font-size: 1.3rem;
-        font-weight: 700;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.3s ease;
-        padding: 0;
-        flex-shrink: 0;
-    }
-
-    .qty-btn-minus:hover {
-        background-color: #ff7e42;
-        color: #ffffff;
-        transform: scale(1.1);
-    }
-
-    /* 数量显示 */
-    .qty-display {
-        font-size: 1.3rem;
-        font-weight: 700;
-        color: #3e2723;
-        min-width: 40px;
-        text-align: center;
-        line-height: 1;
-    }
-
-    /* 增加按钮 */
-    .qty-btn-plus {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #ff7e42 0%, #ff9a56 100%);
-        color: #ffffff;
-        font-size: 1.3rem;
-        font-weight: 700;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.3s ease;
-        border: none;
-        padding: 0;
-        flex-shrink: 0;
-    }
-
-    .qty-btn-plus:hover {
-        transform: scale(1.1);
-        box-shadow: 0 4px 12px rgba(255, 126, 66, 0.3);
-    }
-
-    /* Streamlit 按钮隐藏 */
-    .quantity-control button[data-testid^="baseButton"] {
-        display: none !important;
-    }
-  
-    /* ============= 【修复】侧边栏字体 ============= */
+    /* ============= 侧边栏样式 ============= */
     [data-testid="stSidebar"] {
         background: linear-gradient(180deg, #fff5ee 0%, #ffe8d6 100%);
         box-shadow: 4px 0 18px rgba(92, 60, 37, 0.08);
@@ -258,13 +252,11 @@ st.markdown("""
         font-size: 1.5rem !important;
         margin-bottom: 0.8rem !important;
     }
-    /* 【修复】分类条目字体放大到1.5rem */
     [data-testid="stSidebar"] .stRadio > div > label {
         font-size: 1.5rem !important;
         font-weight: 500 !important;
         color: #5c3c25 !important;
     }
-    /* 【修复】购物车菜品条目字体放大到1.25rem */
     [data-testid="stSidebar"] [role="region"] > div > div > p {
         font-size: 1.25rem !important;
         color: #5c3c25 !important;
@@ -406,61 +398,88 @@ st.markdown("""
             margin-bottom: 1rem;
             padding: 0.5rem 1rem;
         }
+        
+        /* 手机端菜品卡片 - 垂直布局，居中对齐 */
         [data-testid="column"] {
             flex: 1 1 100% !important;
             max-width: 100% !important;
         }
         .dish-card {
-            flex-direction: row !important;
+            flex-direction: column !important;
+            align-items: center !important;
         }
         .dish-img-container {
-            width: 35% !important;
+            width: 75% !important;
             height: auto !important;
-            min-height: 120px !important;
-            flex-shrink: 0 !important;
+            min-height: 200px !important;
+            max-height: 250px !important;
+            margin: 1.2rem auto 0 auto !important;
+            border-radius: 12px !important;
+            border-bottom: none !important;
         }
         .dish-info {
-            width: 65% !important;
-            padding: 1rem !important;
-            text-align: left !important;
+            width: 100% !important;
+            padding: 1rem 1.5rem 0.5rem 1.5rem !important;
+            text-align: center !important;
+            align-items: center !important;
         }
         .dish-name {
-            font-size: 1rem !important;
-            text-align: left !important;
+            font-size: 1.4rem !important;
+            text-align: center !important;
         }
         .dish-desc {
-            font-size: 0.75rem !important;
-            text-align: left !important;
-            margin-bottom: 0.5rem !important;
+            font-size: 1rem !important;
+            text-align: center !important;
+            margin-bottom: 0.8rem !important;
         }
         .price-tag {
-            font-size: 1.1rem !important;
-        }
-        .dish-bottom {
-            margin-bottom: 0.5rem !important;
+            font-size: 1.4rem !important;
+            text-align: center !important;
+            display: block !important;
         }
         
-        /* 【手机端核心修复】数量控制保持水平 */
-        .quantity-control {
+        /* 【手机端核心】数量控制器 - 强制水平布局 */
+        .qty-controller {
             display: flex !important;
             flex-direction: row !important;
             align-items: center !important;
             justify-content: center !important;
-            gap: 1.2rem !important;
+            gap: 0 !important;
             width: 100% !important;
-            margin-top: 0.5rem !important;
+            margin: 0.5rem 0 1rem 0 !important;
+            flex-wrap: nowrap !important;
         }
 
-        .qty-btn-minus,
-        .qty-btn-plus {
-            width: 32px !important;
-            height: 32px !important;
-            font-size: 1.1rem !important;
+        .qty-controller > div[data-testid="column"] {
+            display: inline-flex !important;
+            flex: 0 0 auto !important;
+            width: auto !important;
+            min-width: 0 !important;
+            padding: 0 0.5rem !important;
+            justify-content: center !important;
+            align-items: center !important;
         }
 
-        .qty-display {
-            font-size: 1.1rem !important;
-            min-width: 35px !important;
+        .qty-controller .stButton {
+            display: inline-flex !important;
+            width: auto !important;
+        }
+
+        .qty-controller .stButton > button {
+            width: 40px !important;
+            height: 40px !important;
+            min-width: 40px !important;
+            min-height: 40px !important;
+            max-width: 40px !important;
+            max-height: 40px !important;
+            font-size: 1.3rem !important;
+        }
+
+        .qty-number {
+            font-size: 1.4rem !important;
+            min-width: 50px !important;
+            height: 40px !important;
+            line-height: 40px !important;
         }
 
         [data-testid="stSidebar"] .stRadio > div > label {
@@ -503,43 +522,6 @@ st.markdown("""
         }
     }
 </style>
-
-<script>
-// 数量控制的 JavaScript 处理
-document.addEventListener('DOMContentLoaded', function() {
-    setupQuantityControls();
-});
-
-function setupQuantityControls() {
-    const minusButtons = document.querySelectorAll('.qty-btn-minus');
-    const plusButtons = document.querySelectorAll('.qty-btn-plus');
-    
-    minusButtons.forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            const container = this.closest('.quantity-control');
-            const input = container.querySelector('input[type="hidden"]');
-            if (input) {
-                const buttons = container.querySelectorAll('button[data-testid^="baseButton"]');
-                if (buttons.length > 0) {
-                    buttons[0].click();
-                }
-            }
-        });
-    });
-    
-    plusButtons.forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            const container = this.closest('.quantity-control');
-            const buttons = container.querySelectorAll('button[data-testid^="baseButton"]');
-            if (buttons.length > 0) {
-                buttons[buttons.length - 1].click();
-            }
-        });
-    });
-}
-</script>
 """, unsafe_allow_html=True)
 
 # ====================== 3. 餐厅与菜品数据 ======================
@@ -558,27 +540,18 @@ CATEGORIES = [
 ]
 
 DISHES = [
-    # 招牌必点
-    {"id": 101, "category_id": 1, "name": "招牌红烧肉", "price": 58, "img": "https://loremflickr.com/400/300/braised-pork,chinese-food", "desc": "精选五花肉，慢火熬制，肥而不腻"},
+    {"id": 101, "category_id": 1, "name": "麻婆豆腐盖浇饭", "price": 28, "img": "https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?w=400&h=300&fit=crop", "desc": "麻辣鲜香，嫩滑入味"},
     {"id": 103, "category_id": 1, "name": "清炒时令蔬", "price": 22, "img": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop", "desc": "每日新鲜蔬菜，清炒保留原味"},
     {"id": 104, "category_id": 1, "name": "番茄蛋花汤", "price": 18, "img": "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&h=300&fit=crop", "desc": "酸甜可口，营养丰富，家常暖心汤"},
-  
-    # 经典热菜
     {"id": 201, "category_id": 2, "name": "宫保鸡丁", "price": 42, "img": "https://images.unsplash.com/photo-1525755662778-989d0524087e?w=400&h=300&fit=crop", "desc": "经典川菜，麻辣鲜香，花生酥脆"},
     {"id": 205, "category_id": 2, "name": "黑椒牛柳", "price": 52, "img": "https://images.unsplash.com/photo-1558030006-450675393462?w=400&h=300&fit=crop", "desc": "鲜嫩牛柳配黑椒汁，口感醇厚"},
-  
-    # 暖心主食
     {"id": 401, "category_id": 4, "name": "扬州炒饭", "price": 25, "img": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400&h=300&fit=crop", "desc": "粒粒分明，配料丰富"},
     {"id": 402, "category_id": 4, "name": "鲜虾鸡蛋面", "price": 32, "img": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&h=300&fit=crop", "desc": "虾舞金汤，面映暖阳"},
     {"id": 403, "category_id": 4, "name": "鲜肉小笼包", "price": 28, "img": "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=400&h=300&fit=crop", "desc": "皮薄馅大，浓郁爆汁"},
     {"id": 404, "category_id": 4, "name": "牛肉汉堡", "price": 33, "img": "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=400&h=300&fit=crop", "desc": "外焦里嫩，大口满足"},
-  
-    # 饮品畅饮
     {"id": 501, "category_id": 5, "name": "冰镇柠檬茶", "price": 12, "img": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&h=300&fit=crop", "desc": "手打柠檬配红茶，解暑神器"},
     {"id": 503, "category_id": 5, "name": "鲜榨橙汁", "price": 18, "img": "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400&h=300&fit=crop", "desc": "新鲜橙子现榨，维C满满"},
     {"id": 504, "category_id": 5, "name": "热奶茶", "price": 15, "img": "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=400&h=300&fit=crop", "desc": "醇香奶茶，丝滑顺口"},
-  
-    # 甜蜜甜品
     {"id": 601, "category_id": 6, "name": "提拉米苏", "price": 28, "img": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=400&h=300&fit=crop", "desc": "意式经典，咖啡酒香"},
     {"id": 602, "category_id": 6, "name": "芒果班戟", "price": 22, "img": "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=400&h=300&fit=crop", "desc": "新鲜芒果配淡奶油"},
     {"id": 603, "category_id": 6, "name": "香草冰淇淋", "price": 18, "img": "https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?w=400&h=300&fit=crop", "desc": "绵密丝滑，香草浓郁"},
@@ -642,12 +615,7 @@ st.markdown('<div class="top-category-nav">', unsafe_allow_html=True)
 top_cat_cols = st.columns(len(CATEGORIES))
 for idx, cat in enumerate(CATEGORIES):
     with top_cat_cols[idx]:
-        is_active = cat["name"] == st.session_state.selected_category
-        if st.button(
-            cat["name"],
-            key=f"top_cat_{cat['id']}",
-            use_container_width=True
-        ):
+        if st.button(cat["name"], key=f"top_cat_{cat['id']}", use_container_width=True):
             st.session_state.selected_category = cat["name"]
             st.rerun()
 st.markdown('</div>', unsafe_allow_html=True)
@@ -667,7 +635,6 @@ with st.sidebar:
         st.rerun()
     st.markdown("---")
   
-    # 购物车明细
     total_price, total_count = get_cart_total()
     if total_count > 0:
         st.markdown(f"## 🛒 购物车 ({total_count})")
@@ -679,13 +646,10 @@ with st.sidebar:
                     st.text(f"{dish['name']} x{count}")
                 with col2:
                     st.text(f"¥{dish['price']*count}")
-      
         st.markdown("---")
         st.markdown(f"### 合计：¥{total_price}")
-      
         if st.button("✅ 确认下单", type="primary", use_container_width=True):
             submit_order()
-      
         if st.button("🗑️ 清空购物车", use_container_width=True):
             clear_cart()
             st.rerun()
@@ -698,53 +662,42 @@ current_dishes = [d for d in DISHES if d["category_id"] == current_category["id"
 
 st.markdown(f'<h2 class="category-title">{current_category["name"]}</h2>', unsafe_allow_html=True)
 
-# 菜品4列布局
 cols = st.columns(4)
 for idx, dish in enumerate(current_dishes):
     with cols[idx % 4]:
         st.markdown('<div class="dish-card">', unsafe_allow_html=True)
-      
-        # 菜品图片
+        
         st.markdown(f"""
         <div class="dish-img-container">
-            <img class="dish-img" src="{dish['img']}" alt="{dish['name']}" onerror="this.src='https://picsum.photos/400/300?food={dish['name']}'">
+            <img class="dish-img" src="{dish['img']}" alt="{dish['name']}">
         </div>
-        """, unsafe_allow_html=True)
-      
-        # 菜品信息
-        st.markdown(f"""
         <div class="dish-info">
             <h3 class="dish-name">{dish['name']}</h3>
             <p class="dish-desc">{dish['desc']}</p>
-            <div class="dish-bottom">
-                <span class="price-tag">¥{dish['price']}</span>
-            </div>
+            <span class="price-tag">¥{dish['price']}</span>
+        </div>
         """, unsafe_allow_html=True)
-      
-        # 【新风格】数量控制
+        
         current_count = st.session_state.cart.get(dish["id"], 0)
         
-        st.markdown('<div class="quantity-control">', unsafe_allow_html=True)
+        # 数量控制器 - 使用columns实现水平布局
+        st.markdown('<div class="qty-controller">', unsafe_allow_html=True)
         
-        # 减少按钮
-        col1, col2, col3 = st.columns(3, gap="small")
+        col1, col2, col3 = st.columns([1, 1, 1])
         
         with col1:
-            if st.button("−", key=f"reduce_{dish['id']}", help="减少"):
+            if st.button("➖", key=f"minus_{dish['id']}"):
                 reduce_from_cart(dish["id"])
                 st.rerun()
         
-        # 数量显示
         with col2:
-            st.markdown(f'<div class="qty-display">{current_count}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="qty-number">{current_count}</div>', unsafe_allow_html=True)
         
-        # 增加按钮
         with col3:
-            if st.button("+", key=f"add_{dish['id']}", help="增加"):
+            if st.button("➕", key=f"plus_{dish['id']}"):
                 add_to_cart(dish["id"])
                 st.rerun()
         
-        st.markdown('</div>', unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
