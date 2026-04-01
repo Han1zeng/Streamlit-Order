@@ -158,6 +158,7 @@ st.markdown("""
         margin: 0 0 1rem 0;
         line-height: 1.5;
         text-align: left;
+        flex-grow: 1;
     }
     .dish-bottom {
         display: flex;
@@ -171,84 +172,79 @@ st.markdown("""
         font-weight: 800;
     }
   
-    /* ============= 【核心修复】加减按钮 ============= */
-    button[data-testid^="baseButton-reduce_"],
-    button[data-testid^="baseButton-add_"] {
-        width: 20px !important;
-        height: 20px !important;
-        min-width: 20px !important;
-        min-height: 20px !important;
-        max-width: 20px !important;
-        max-height: 20px !important;
-        border-radius: 50% !important;
-        padding: 0px !important;
-        margin: 0px !important;
-        line-height: 1 !important;
-        background: linear-gradient(135deg, #ff7e42 0%, #ff9a56 100%) !important;
-        color: #fff !important;
-        border: none !important;
-        font-size: 0.85rem !important;
-        font-weight: 700 !important;
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        flex-shrink: 0 !important;
-        white-space: nowrap !important;
-    }
-    
-    button[data-testid^="baseButton-reduce_"]:hover,
-    button[data-testid^="baseButton-add_"]:hover {
-        transform: scale(1.1) !important;
-        background: linear-gradient(135deg, #ff6333 0%, #ff451a 100%) !important;
-    }
-    
-    button[data-testid^="baseButton-reduce_"]:focus,
-    button[data-testid^="baseButton-add_"]:focus {
-        box-shadow: none !important;
-        outline: none !important;
-    }
-
-    /* 【核心修复】按钮行容器 - 使用原生 flexbox */
-    .btn-row-container {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        gap: 2.5rem !important;
-        width: 100% !important;
-        flex-wrap: nowrap !important;
+    /* ============= 【新风格】加减按钮容器 ============= */
+    .quantity-control {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1.5rem;
+        width: 100%;
         margin-top: 1rem;
-        padding: 0 !important;
+        padding: 0;
     }
 
-    /* 减少按钮容器 */
-    .btn-item {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        flex: 0 0 auto !important;
-        width: auto !important;
+    /* 减少按钮 */
+    .qty-btn-minus {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 2px solid #ff7e42;
+        background-color: #ffffff;
+        color: #ff7e42;
+        font-size: 1.3rem;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        padding: 0;
+        flex-shrink: 0;
     }
 
-    /* 数字显示容器 */
-    .count-display {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        width: 20px !important;
-        height: 20px !important;
-        flex: 0 0 20px !important;
+    .qty-btn-minus:hover {
+        background-color: #ff7e42;
+        color: #ffffff;
+        transform: scale(1.1);
     }
 
-    /* 菜品数量 */
-    .count-number {
-        font-size: 1.1rem !important;
-        font-weight: 700 !important;
-        color: #3e2723 !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        line-height: 1 !important;
-        white-space: nowrap !important;
-        display: block !important;
+    /* 数量显示 */
+    .qty-display {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #3e2723;
+        min-width: 40px;
+        text-align: center;
+        line-height: 1;
+    }
+
+    /* 增加按钮 */
+    .qty-btn-plus {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff7e42 0%, #ff9a56 100%);
+        color: #ffffff;
+        font-size: 1.3rem;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        border: none;
+        padding: 0;
+        flex-shrink: 0;
+    }
+
+    .qty-btn-plus:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(255, 126, 66, 0.3);
+    }
+
+    /* Streamlit 按钮隐藏 */
+    .quantity-control button[data-testid^="baseButton"] {
+        display: none !important;
     }
   
     /* ============= 【修复】侧边栏字体 ============= */
@@ -441,48 +437,32 @@ st.markdown("""
             font-size: 1.1rem !important;
         }
         .dish-bottom {
-            margin-bottom: 0.8rem !important;
+            margin-bottom: 0.5rem !important;
         }
         
-        /* 【手机端核心修复】按钮行必须保持水平 */
-        .btn-row-container {
+        /* 【手机端核心修复】数量控制保持水平 */
+        .quantity-control {
             display: flex !important;
             flex-direction: row !important;
             align-items: center !important;
             justify-content: center !important;
-            gap: 1.5rem !important;
+            gap: 1.2rem !important;
             width: 100% !important;
-            flex-wrap: nowrap !important;
             margin-top: 0.5rem !important;
-            padding: 0 !important;
         }
-        
-        .btn-item {
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            flex: 0 0 auto !important;
-            width: auto !important;
+
+        .qty-btn-minus,
+        .qty-btn-plus {
+            width: 32px !important;
+            height: 32px !important;
+            font-size: 1.1rem !important;
         }
-        
-        button[data-testid^="baseButton-reduce_"],
-        button[data-testid^="baseButton-add_"] {
-            width: 18px !important;
-            height: 18px !important;
-            min-width: 18px !important;
-            min-height: 18px !important;
-            max-width: 18px !important;
-            max-height: 18px !important;
-            font-size: 0.8rem !important;
+
+        .qty-display {
+            font-size: 1.1rem !important;
+            min-width: 35px !important;
         }
-        .count-display {
-            width: 18px !important;
-            height: 18px !important;
-            flex: 0 0 18px !important;
-        }
-        .count-number {
-            font-size: 1rem !important;
-        }
+
         [data-testid="stSidebar"] .stRadio > div > label {
             font-size: 1.25rem !important;
         }
@@ -523,6 +503,43 @@ st.markdown("""
         }
     }
 </style>
+
+<script>
+// 数量控制的 JavaScript 处理
+document.addEventListener('DOMContentLoaded', function() {
+    setupQuantityControls();
+});
+
+function setupQuantityControls() {
+    const minusButtons = document.querySelectorAll('.qty-btn-minus');
+    const plusButtons = document.querySelectorAll('.qty-btn-plus');
+    
+    minusButtons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.quantity-control');
+            const input = container.querySelector('input[type="hidden"]');
+            if (input) {
+                const buttons = container.querySelectorAll('button[data-testid^="baseButton"]');
+                if (buttons.length > 0) {
+                    buttons[0].click();
+                }
+            }
+        });
+    });
+    
+    plusButtons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const container = this.closest('.quantity-control');
+            const buttons = container.querySelectorAll('button[data-testid^="baseButton"]');
+            if (buttons.length > 0) {
+                buttons[buttons.length - 1].click();
+            }
+        });
+    });
+}
+</script>
 """, unsafe_allow_html=True)
 
 # ====================== 3. 餐厅与菜品数据 ======================
@@ -704,38 +721,28 @@ for idx, dish in enumerate(current_dishes):
             </div>
         """, unsafe_allow_html=True)
       
-        # 【核心修复】按钮行 - 使用纯 HTML div 实现
+        # 【新风格】数量控制
         current_count = st.session_state.cart.get(dish["id"], 0)
         
-        st.markdown('<div class="btn-row-container">', unsafe_allow_html=True)
+        st.markdown('<div class="quantity-control">', unsafe_allow_html=True)
         
-        # 使用原生 HTML 来包装按钮，不使用 Streamlit 的列
-        if current_count > 0:
-            st.markdown('<div class="btn-item">', unsafe_allow_html=True)
-            if st.button("➖", key=f"reduce_{dish['id']}", help="减少"):
+        # 减少按钮
+        col1, col2, col3 = st.columns(3, gap="small")
+        
+        with col1:
+            if st.button("−", key=f"reduce_{dish['id']}", help="减少"):
                 reduce_from_cart(dish["id"])
                 st.rerun()
-            st.markdown('</div>', unsafe_allow_html=True)
-            
-            st.markdown(f'<div class="btn-item"><div class="count-display"><span class="count-number">{current_count}</span></div></div>', unsafe_allow_html=True)
-            
-            st.markdown('<div class="btn-item">', unsafe_allow_html=True)
-            if st.button("➕", key=f"add_{dish['id']}", help="增加"):
+        
+        # 数量显示
+        with col2:
+            st.markdown(f'<div class="qty-display">{current_count}</div>', unsafe_allow_html=True)
+        
+        # 增加按钮
+        with col3:
+            if st.button("+", key=f"add_{dish['id']}", help="增加"):
                 add_to_cart(dish["id"])
                 st.rerun()
-            st.markdown('</div>', unsafe_allow_html=True)
-        else:
-            st.markdown('<div class="btn-item">', unsafe_allow_html=True)
-            st.markdown('<div style="visibility: hidden;">➖</div>', unsafe_allow_html=True)
-            st.markdown('</div>', unsafe_allow_html=True)
-            
-            st.markdown('<div class="btn-item"><div class="count-display"></div></div>', unsafe_allow_html=True)
-            
-            st.markdown('<div class="btn-item">', unsafe_allow_html=True)
-            if st.button("➕", key=f"add_{dish['id']}", help="增加"):
-                add_to_cart(dish["id"])
-                st.rerun()
-            st.markdown('</div>', unsafe_allow_html=True)
         
         st.markdown('</div>', unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
