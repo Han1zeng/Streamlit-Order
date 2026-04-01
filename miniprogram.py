@@ -9,30 +9,30 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ====================== 2. 样式优化：修复所有显示/对齐/交互问题 ======================
+# ====================== 2. 样式精准修复 ======================
 st.markdown("""
 <style>
-    /* 【核心修复】强制覆盖Streamlit默认白色背景 */
+    /* 全局背景与基础样式 */
     .stApp {
-        background-color: #fdf6ef !important; /* 暖米色温馨背景，彻底替换纯白 */
+        background-color: #fdf6ef !important;
     }
     .main, .block-container {
         background-color: #fdf6ef !important;
     }
-    /* 全局字体与基础样式 */
     * {
         font-family: "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", sans-serif;
+        box-sizing: border-box;
     }
     .block-container {
         padding-top: 0;
         padding-bottom: 8rem;
         max-width: 1400px;
     }
-    
-    /* 顶部店铺Header：暖橙渐变温馨风格，修复居中问题 */
+  
+    /* 顶部店铺Header */
     .restaurant-header {
         text-align: center;
-        padding: 2.2rem 0;
+        padding: 2.2rem 1rem;
         background: linear-gradient(135deg, #ff7e42 0%, #ff9a56 100%);
         color: #fff;
         border-radius: 0 0 28px 28px;
@@ -43,6 +43,7 @@ st.markdown("""
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        box-sizing: border-box;
     }
     .restaurant-name {
         font-size: 2.6rem;
@@ -52,6 +53,7 @@ st.markdown("""
         text-shadow: 1px 1px 3px rgba(0,0,0,0.15);
         text-align: center;
         width: 100%;
+        line-height: 1.2;
     }
     .restaurant-slogan {
         font-size: 1rem;
@@ -61,55 +63,35 @@ st.markdown("""
         letter-spacing: 1px;
         text-align: center;
         width: 100%;
+        line-height: 1.4;
     }
 
-    /* 【修复】移动端分类导航：原生按钮样式，修复点击无反应问题 */
-    .mobile-category-nav {
-        display: none;
-        overflow-x: auto;
-        gap: 0.8rem;
+    /* 顶部分类按钮 - 字体放大到1.3rem */
+    .top-category-nav {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
         padding: 0 1rem 1.5rem;
-        white-space: nowrap;
-        -webkit-overflow-scrolling: touch;
-        width: 100%;
+        flex-wrap: wrap;
     }
-    .mobile-category-nav::-webkit-scrollbar {
-        display: none;
+    .top-category-nav .stButton > button {
+        background: linear-gradient(135deg, #ff7e42 0%, #ff9a56 100%) !important;
+        color: #fff !important;
+        border: none !important;
+        border-radius: 25px !important;
+        padding: 0.7rem 1.8rem !important;
+        font-weight: 600 !important;
+        font-size: 1.3rem !important;
+        min-width: fit-content !important;
+        height: auto !important;
     }
-    .mobile-category-nav .stButton>button {
-        display: inline-block;
-        padding: 0.5rem 1.2rem;
-        background: #fff;
-        border-radius: 25px;
-        border: 1px solid #ff7e42;
-        color: #5c3c25;
-        font-weight: 600;
-        font-size: 0.9rem;
-        white-space: nowrap;
-        height: fit-content;
-        min-height: fit-content;
-        width: fit-content;
+    .top-category-nav .stButton > button:hover {
+        transform: scale(1.05) !important;
+        background: linear-gradient(135deg, #ff6333 0%, #ff451a 100%) !important;
+        color: #fff !important;
     }
-    .mobile-category-nav .stButton>button:hover {
-        transform: scale(1.05);
-        border-color: #ff7e42;
-        color: #5c3c25;
-    }
-    .mobile-category-nav .stButton>button:focus:not(:active) {
-        border-color: #ff7e42;
-        color: #5c3c25;
-        box-shadow: none;
-    }
-    .mobile-category-nav .category-active>button {
-        background: linear-gradient(135deg, #ff7e42 0%, #ff6333 100%);
-        color: #fff;
-        border-color: #ff7e42;
-    }
-    .mobile-category-nav .category-active>button:hover {
-        color: #fff;
-    }
-    
-    /* 分类标题：暖调风格 */
+  
+    /* 分类标题 */
     .category-title {
         font-size: 1.7rem;
         font-weight: 700;
@@ -120,8 +102,8 @@ st.markdown("""
         border-radius: 10px;
         border-left: 6px solid #ff7e42;
     }
-    
-    /* 菜品卡片：圆角温馨卡片，彻底优化视觉 */
+  
+    /* 菜品卡片 */
     .dish-card {
         background-color: #ffffff;
         border-radius: 18px;
@@ -177,74 +159,132 @@ st.markdown("""
         font-size: 1.45rem;
         font-weight: 800;
     }
-    
-    /* 【核心修复】增减按钮：完美居中、尺寸协调、符号不偏移 */
-    button[key^="reduce_"], button[key^="add_"] {
-        width: 40px !important;
-        height: 40px !important;
-        min-width: 40px !important;
-        min-height: 40px !important;
-        max-width: 40px !important;
-        max-height: 40px !important;
+  
+    /* ============= 【核心修复】加减按钮 ============= */
+    button[data-testid^="baseButton-reduce_"],
+    button[data-testid^="baseButton-add_"] {
+        width: 20px !important;
+        height: 20px !important;
+        min-width: 20px !important;
+        min-height: 20px !important;
+        max-width: 20px !important;
+        max-height: 20px !important;
         border-radius: 50% !important;
+        padding: 0px !important;
+        margin: 0px !important;
+        line-height: 1 !important;
+        background: linear-gradient(135deg, #ff7e42 0%, #ff9a56 100%) !important;
+        color: #fff !important;
+        border: none !important;
+        font-size: 0.85rem !important;
+        font-weight: 700 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex-shrink: 0 !important;
+        white-space: nowrap !important;
+    }
+    
+    button[data-testid^="baseButton-reduce_"]:hover,
+    button[data-testid^="baseButton-add_"]:hover {
+        transform: scale(1.1) !important;
+        background: linear-gradient(135deg, #ff6333 0%, #ff451a 100%) !important;
+    }
+    
+    button[data-testid^="baseButton-reduce_"]:focus,
+    button[data-testid^="baseButton-add_"]:focus {
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    /* 【核心修复】按钮行容器 - 使用 flexbox 完美对齐 */
+    .btn-row-wrapper {
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        padding: 0 !important;
-        margin: 0 auto !important;
-        font-size: 1.2rem !important;
-        font-weight: 700 !important;
-        line-height: 1 !important;
-        text-align: center !important;
-    }
-    /* 减号按钮样式 */
-    button[key^="reduce_"] {
-        background: linear-gradient(135deg, #fff0e6 0%, #ffe0cc 100%);
-        color: #5c3c25;
-        border: 1px solid #ffccb3;
-    }
-    button[key^="reduce_"]:hover {
-        background: linear-gradient(135deg, #ffe0cc 0%, #ffccb3 100%);
-        transform: scale(1.1);
-        color: #5c3c25;
-        border: 1px solid #ffccb3;
-    }
-    /* 加号按钮样式 */
-    button[key^="add_"] {
-        background: linear-gradient(135deg, #ff7e42 0%, #ff6333 100%);
-        color: white;
-        box-shadow: 0 3px 10px rgba(255, 126, 66, 0.3);
-        border: none;
-    }
-    button[key^="add_"]:hover {
-        background: linear-gradient(135deg, #ff6333 0%, #ff451a 100%);
-        transform: scale(1.1);
-        color: white;
-        border: none;
-    }
-    button[key^="reduce_"]:focus:not(:active), button[key^="add_"]:focus:not(:active) {
-        box-shadow: none;
-        border: none;
+        gap: 2.5rem !important;
+        width: 100% !important;
+        flex-wrap: nowrap !important;
+        margin-top: 1rem;
     }
 
-    /* 【核心修复】菜品数量：圆形外框、固定在按钮中间、完美居中 */
-    .count-circle {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: #fff0e6;
-        border: 1px solid #ffccb3;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.15rem;
-        font-weight: 700;
-        color: #3e2723;
-        margin: 0 auto;
-        line-height: 1;
+    /* 减少按钮容器 */
+    .btn-reduce-wrapper {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: auto !important;
+        flex-shrink: 0 !important;
     }
-    
-    /* 底部固定购物车栏：暖橙风格，响应式适配 */
+
+    /* 数字显示容器 */
+    .count-display {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 20px !important;
+        height: 20px !important;
+        flex-shrink: 0 !important;
+    }
+
+    /* 菜品数量 */
+    .count-number {
+        font-size: 1.1rem !important;
+        font-weight: 700 !important;
+        color: #3e2723 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        line-height: 1 !important;
+        white-space: nowrap !important;
+        display: inline-block !important;
+    }
+
+    /* 加号按钮容器 */
+    .btn-add-wrapper {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: auto !important;
+        flex-shrink: 0 !important;
+    }
+  
+    /* ============= 【修复】侧边栏字体 ============= */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #fff5ee 0%, #ffe8d6 100%);
+        box-shadow: 4px 0 18px rgba(92, 60, 37, 0.08);
+    }
+    [data-testid="stSidebar"] h2 {
+        color: #5c3c25 !important;
+        font-weight: 700 !important;
+        font-size: 1.5rem !important;
+        margin-bottom: 0.8rem !important;
+    }
+    /* 【修复】分类条目字体放大到1.5rem */
+    [data-testid="stSidebar"] .stRadio > div > label {
+        font-size: 1.5rem !important;
+        font-weight: 500 !important;
+        color: #5c3c25 !important;
+    }
+    /* 【修复】购物车菜品条目字体放大到1.25rem */
+    [data-testid="stSidebar"] [role="region"] > div > div > p {
+        font-size: 1.25rem !important;
+        color: #5c3c25 !important;
+        font-weight: 500 !important;
+    }
+    [data-testid="stSidebar"] .stText p {
+        font-size: 1.25rem !important;
+        color: #5c3c25 !important;
+        font-weight: 500 !important;
+        line-height: 1.6 !important;
+    }
+    [data-testid="stSidebar"] h3 {
+        font-size: 1.4rem !important;
+        color: #5c3c25 !important;
+        font-weight: 700 !important;
+        margin: 0.8rem 0 !important;
+    }
+  
+    /* 底部固定购物车栏 */
     .cart-bar-container {
         position: fixed;
         bottom: 0;
@@ -308,107 +348,65 @@ st.markdown("""
         font-size: 0.9rem;
         color: #fff0e6;
         border: 1px solid rgba(255, 240, 230, 0.3);
-        white-space: nowrap; /* 修复电脑端文字显示不全 */
+        white-space: nowrap;
         min-width: fit-content;
     }
-    /* 底部结算按钮原生样式适配 */
-    .stButton>button {
-        background: linear-gradient(135deg, #ff7e42 0%, #ff6333 100%);
-        color: white;
-        border: none;
-        padding: 1.1rem 3.3rem;
-        border-radius: 50px;
-        font-size: 1.15rem;
-        font-weight: 800;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 5px 18px rgba(255, 126, 66, 0.35);
-        letter-spacing: 1px;
-        height: fit-content;
-    }
-    .stButton>button:hover {
-        transform: translateY(-3px) scale(1.04);
-        box-shadow: 0 9px 26px rgba(255, 126, 66, 0.45);
-        background: linear-gradient(135deg, #ff6333 0%, #ff451a 100%);
-        color: white;
-        border: none;
-    }
-    .stButton>button:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        transform: none;
-    }
     
-    /* 【核心修复】侧边栏字体放大：解决分类、购物车、合计字体偏小问题 */
-    [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #fff5ee 0%, #ffe8d6 100%);
-        box-shadow: 4px 0 18px rgba(92, 60, 37, 0.08);
+    /* 底部结算按钮 */
+    .stButton > button {
+        background: linear-gradient(135deg, #ff7e42 0%, #ff6333 100%) !important;
+        color: white !important;
+        border: none !important;
+        padding: 1.1rem 3.3rem !important;
+        border-radius: 50px !important;
+        font-size: 1.15rem !important;
+        font-weight: 800 !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 5px 18px rgba(255, 126, 66, 0.35) !important;
+        letter-spacing: 1px !important;
+        height: fit-content !important;
     }
-    [data-testid="stSidebar"] h2 {
-        color: #5c3c25;
-        font-weight: 700;
-        font-size: 1.4rem !important;
-        margin-bottom: 0.5rem;
+    .stButton > button:hover {
+        transform: translateY(-3px) scale(1.04) !important;
+        box-shadow: 0 9px 26px rgba(255, 126, 66, 0.45) !important;
+        background: linear-gradient(135deg, #ff6333 0%, #ff451a 100%) !important;
     }
-    [data-testid="stSidebar"] .stRadio label {
-        font-size: 1.1rem !important;
-        font-weight: 500;
-        color: #5c3c25;
-        padding: 0.3rem 0;
+    .stButton > button:disabled {
+        opacity: 0.5 !important;
     }
-    [data-testid="stSidebar"] .stText p {
-        font-size: 1rem !important;
-        color: #5c3c25;
-        font-weight: 500;
-    }
-    [data-testid="stSidebar"] h3 {
-        font-size: 1.35rem !important;
-        color: #5c3c25;
-        font-weight: 700;
-        margin: 0.5rem 0;
-    }
-    [data-testid="stSidebar"] .stHorizontalBlock {
-        align-items: center;
-    }
-    
+  
     /* 隐藏Streamlit默认元素 */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     [data-testid="stToolbar"] {visibility: hidden;}
-    /* 隐藏按钮默认的点击聚焦边框 */
-    button:focus {
-        outline: none !important;
-        box-shadow: none !important;
-    }
-
-    /* ====================== 响应式媒体查询：手机端适配核心 ====================== */
+    
+    /* ====================== 手机端响应式适配 ====================== */
     @media only screen and (max-width: 768px) {
-        /* 显示移动端分类导航 */
-        .mobile-category-nav {
-            display: flex !important;
-        }
-        /* 【修复】Header文字居中，调整字号避免挤压 */
         .restaurant-header {
-            padding: 1.2rem 0.5rem;
+            padding: 1.2rem 0.8rem;
             margin-bottom: 0.5rem;
         }
         .restaurant-name {
             font-size: 1.8rem;
             letter-spacing: 1px;
-            text-align: center;
         }
         .restaurant-slogan {
             font-size: 0.8rem;
-            text-align: center;
-            word-break: keep-all;
         }
-        /* 分类标题适配 */
+        .top-category-nav {
+            gap: 0.8rem;
+            padding: 0 0.5rem 1rem;
+        }
+        .top-category-nav .stButton > button {
+            padding: 0.5rem 1rem !important;
+            font-size: 1.05rem !important;
+        }
         .category-title {
             font-size: 1.3rem;
             margin-bottom: 1rem;
             padding: 0.5rem 1rem;
         }
-        /* 菜品卡片列数：手机端2列 */
         [data-testid="column"] {
             flex: 1 1 45% !important;
             max-width: 45% !important;
@@ -428,22 +426,32 @@ st.markdown("""
         .price-tag {
             font-size: 1.1rem;
         }
-        /* 【修复】手机端增减按钮与数量同行、居中、尺寸适配 */
-        button[key^="reduce_"], button[key^="add_"] {
-            width: 36px !important;
-            height: 36px !important;
-            min-width: 36px !important;
-            min-height: 36px !important;
-            max-width: 36px !important;
-            max-height: 36px !important;
-            font-size: 1.1rem !important;
+        button[data-testid^="baseButton-reduce_"],
+        button[data-testid^="baseButton-add_"] {
+            width: 18px !important;
+            height: 18px !important;
+            min-width: 18px !important;
+            min-height: 18px !important;
+            max-width: 18px !important;
+            max-height: 18px !important;
+            font-size: 0.8rem !important;
         }
-        .count-circle {
-            width: 36px;
-            height: 36px;
-            font-size: 1rem;
+        .count-display {
+            width: 18px !important;
+            height: 18px !important;
         }
-        /* 底部结算栏适配：减小占比 */
+        .count-number {
+            font-size: 1rem !important;
+        }
+        .btn-row-wrapper {
+            gap: 1.5rem !important;
+        }
+        [data-testid="stSidebar"] .stRadio > div > label {
+            font-size: 1.25rem !important;
+        }
+        [data-testid="stSidebar"] .stText p {
+            font-size: 1.05rem !important;
+        }
         .cart-bar-container {
             padding: 0.8rem 1rem;
         }
@@ -456,26 +464,16 @@ st.markdown("""
         .total-price {
             font-size: 1.4rem;
         }
-        .total-label {
-            font-size: 0.75rem;
+        .stButton > button {
+            padding: 0.8rem 1.5rem !important;
+            font-size: 1rem !important;
         }
-        .total-count {
-            font-size: 0.75rem;
-            padding: 0.35rem 0.8rem;
-        }
-        .stButton>button {
-            padding: 0.8rem 1.5rem;
-            font-size: 1rem;
-        }
-        /* 调整页面底部padding */
         .block-container {
             padding-bottom: 7rem;
         }
     }
 
-    /* ====================== 平板端适配 ====================== */
     @media only screen and (min-width: 768px) and (max-width: 1024px) {
-        /* 菜品卡片列数：平板端3列 */
         [data-testid="column"] {
             flex: 1 1 30% !important;
             max-width: 30% !important;
@@ -483,14 +481,14 @@ st.markdown("""
         .cart-bar-container {
             padding: 1rem 2rem;
         }
-        .stButton>button {
-            padding: 1rem 2.5rem;
+        .stButton > button {
+            padding: 1rem 2.5rem !important;
         }
     }
 </style>
 """, unsafe_allow_html=True)
 
-# ====================== 3. 餐厅与菜品数据（完全保留原数据，无修改） ======================
+# ====================== 3. 餐厅与菜品数据 ======================
 RESTAURANT_INFO = {
     "name": "悦味轩·精致餐厅",
     "slogan": "新鲜食材 · 匠心烹饪 · 家的味道",
@@ -510,22 +508,22 @@ DISHES = [
     {"id": 101, "category_id": 1, "name": "招牌红烧肉", "price": 58, "img": "https://loremflickr.com/400/300/braised-pork,chinese-food", "desc": "精选五花肉，慢火熬制，肥而不腻"},
     {"id": 103, "category_id": 1, "name": "清炒时令蔬", "price": 22, "img": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop", "desc": "每日新鲜蔬菜，清炒保留原味"},
     {"id": 104, "category_id": 1, "name": "番茄蛋花汤", "price": 18, "img": "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&h=300&fit=crop", "desc": "酸甜可口，营养丰富，家常暖心汤"},
-    
+  
     # 经典热菜
     {"id": 201, "category_id": 2, "name": "宫保鸡丁", "price": 42, "img": "https://images.unsplash.com/photo-1525755662778-989d0524087e?w=400&h=300&fit=crop", "desc": "经典川菜，麻辣鲜香，花生酥脆"},
     {"id": 205, "category_id": 2, "name": "黑椒牛柳", "price": 52, "img": "https://images.unsplash.com/photo-1558030006-450675393462?w=400&h=300&fit=crop", "desc": "鲜嫩牛柳配黑椒汁，口感醇厚"},
-    
+  
     # 暖心主食
     {"id": 401, "category_id": 4, "name": "扬州炒饭", "price": 25, "img": "https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=400&h=300&fit=crop", "desc": "粒粒分明，配料丰富"},
     {"id": 402, "category_id": 4, "name": "鲜虾鸡蛋面", "price": 32, "img": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&h=300&fit=crop", "desc": "虾舞金汤，面映暖阳"},
     {"id": 403, "category_id": 4, "name": "鲜肉小笼包", "price": 28, "img": "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=400&h=300&fit=crop", "desc": "皮薄馅大，浓郁爆汁"},
-    {"id": 404, "category_id": 4, "name": "牛肉汉堡", "price": 3, "img": "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=400&h=300&fit=crop", "desc": "外焦里嫩，大口满足"},
-    
+    {"id": 404, "category_id": 4, "name": "牛肉汉堡", "price": 33, "img": "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=400&h=300&fit=crop", "desc": "外焦里嫩，大口满足"},
+  
     # 饮品畅饮
     {"id": 501, "category_id": 5, "name": "冰镇柠檬茶", "price": 12, "img": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&h=300&fit=crop", "desc": "手打柠檬配红茶，解暑神器"},
     {"id": 503, "category_id": 5, "name": "鲜榨橙汁", "price": 18, "img": "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400&h=300&fit=crop", "desc": "新鲜橙子现榨，维C满满"},
     {"id": 504, "category_id": 5, "name": "热奶茶", "price": 15, "img": "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=400&h=300&fit=crop", "desc": "醇香奶茶，丝滑顺口"},
-    
+  
     # 甜蜜甜品
     {"id": 601, "category_id": 6, "name": "提拉米苏", "price": 28, "img": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=400&h=300&fit=crop", "desc": "意式经典，咖啡酒香"},
     {"id": 602, "category_id": 6, "name": "芒果班戟", "price": 22, "img": "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=400&h=300&fit=crop", "desc": "新鲜芒果配淡奶油"},
@@ -566,7 +564,6 @@ def clear_cart():
     st.session_state.cart = {}
 
 def submit_order():
-    """统一的下单逻辑，侧边栏和底部按钮共用"""
     total_price, total_count = get_cart_total()
     if total_count > 0:
         st.success(f"🎉 下单成功！\n\n您已成功下单{total_count}件商品，合计¥{total_price}\n\n我们会尽快为您备餐，请稍候~")
@@ -585,27 +582,20 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# --- 【修复】移动端顶部分类导航：原生按钮，彻底解决点击无反应问题 ---
+# --- 顶部分类导航 ---
 category_names = [c["name"] for c in CATEGORIES]
-st.markdown('<div class="mobile-category-nav">', unsafe_allow_html=True)
-mobile_cat_cols = st.columns(len(CATEGORIES))
+st.markdown('<div class="top-category-nav">', unsafe_allow_html=True)
+top_cat_cols = st.columns(len(CATEGORIES))
 for idx, cat in enumerate(CATEGORIES):
-    with mobile_cat_cols[idx]:
+    with top_cat_cols[idx]:
         is_active = cat["name"] == st.session_state.selected_category
         if st.button(
             cat["name"],
-            key=f"mobile_cat_{cat['id']}",
-            use_container_width=True,
-            type="secondary"
+            key=f"top_cat_{cat['id']}",
+            use_container_width=True
         ):
             st.session_state.selected_category = cat["name"]
             st.rerun()
-        # 【核心修复】给激活的按钮添加样式类，修正字符串拼接与CSS大括号转义
-        if is_active:
-            st.markdown(
-                f'<style>.element-container:has(#mobile_cat_{cat["id"]}) .stButton {{ class: category-active; }}</style>',
-                unsafe_allow_html=True
-            )
 st.markdown('</div>', unsafe_allow_html=True)
 
 # --- 左侧边栏：分类导航 ---
@@ -618,12 +608,11 @@ with st.sidebar:
         index=category_names.index(st.session_state.selected_category),
         label_visibility="collapsed"
     )
-    # 同步侧边栏选择到session_state
     if selected_category_name != st.session_state.selected_category:
         st.session_state.selected_category = selected_category_name
         st.rerun()
     st.markdown("---")
-    
+  
     # 购物车明细
     total_price, total_count = get_cart_total()
     if total_count > 0:
@@ -636,15 +625,13 @@ with st.sidebar:
                     st.text(f"{dish['name']} x{count}")
                 with col2:
                     st.text(f"¥{dish['price']*count}")
-        
+      
         st.markdown("---")
         st.markdown(f"### 合计：¥{total_price}")
-        
-        # 下单按钮
+      
         if st.button("✅ 确认下单", type="primary", use_container_width=True):
             submit_order()
-        
-        # 清空购物车按钮
+      
         if st.button("🗑️ 清空购物车", use_container_width=True):
             clear_cart()
             st.rerun()
@@ -655,22 +642,21 @@ with st.sidebar:
 current_category = next(c for c in CATEGORIES if c["name"] == selected_category_name)
 current_dishes = [d for d in DISHES if d["category_id"] == current_category["id"]]
 
-# 分类标题
 st.markdown(f'<h2 class="category-title">{current_category["name"]}</h2>', unsafe_allow_html=True)
 
-# 【修复】菜品列布局，4列适配，调整按钮列比例保证数量居中
+# 菜品4列布局
 cols = st.columns(4)
 for idx, dish in enumerate(current_dishes):
     with cols[idx % 4]:
         st.markdown('<div class="dish-card">', unsafe_allow_html=True)
-        
+      
         # 菜品图片
         st.markdown(f"""
         <div class="dish-img-container">
             <img class="dish-img" src="{dish['img']}" alt="{dish['name']}" onerror="this.src='https://picsum.photos/400/300?food={dish['name']}'">
         </div>
         """, unsafe_allow_html=True)
-        
+      
         # 菜品信息
         st.markdown(f"""
         <div class="dish-info">
@@ -681,28 +667,37 @@ for idx, dish in enumerate(current_dishes):
             </div>
         </div>
         """, unsafe_allow_html=True)
-        
-        # 【核心修复】数量控制布局：调整列比例，数量固定在中间，圆形外框
+      
+        # 【核心修复】按钮行 - 使用 HTML 直接渲染实现完美对齐
         current_count = st.session_state.cart.get(dish["id"], 0)
-        # 调整列比例，让减号、数量、加号均匀分布在右侧
-        btn_cols = st.columns([4, 1, 1, 1])
-        with btn_cols[1]:
-            if current_count > 0:
-                st.button("➖", key=f"reduce_{dish['id']}")
-        with btn_cols[2]:
-            if current_count > 0:
-                st.markdown(f'<div class="count-circle">{current_count}</div>', unsafe_allow_html=True)
-        with btn_cols[3]:
-            st.button("➕", key=f"add_{dish['id']}")
         
-        # 按钮点击事件处理
-        if st.session_state.get(f"add_{dish['id']}"):
-            add_to_cart(dish["id"])
-            st.rerun()
-        if st.session_state.get(f"reduce_{dish['id']}"):
-            reduce_from_cart(dish["id"])
-            st.rerun()
+        # 构建减少按钮
+        reduce_placeholder = st.empty()
+        count_placeholder = st.empty()
+        add_placeholder = st.empty()
         
+        with st.container():
+            st.markdown('<div class="btn-row-wrapper">', unsafe_allow_html=True)
+            
+            reduce_col, count_col, add_col = st.columns([1, 1, 1], gap="large")
+            
+            with reduce_col:
+                if current_count > 0:
+                    if st.button("➖", key=f"reduce_{dish['id']}", help="减少"):
+                        reduce_from_cart(dish["id"])
+                        st.rerun()
+            
+            with count_col:
+                if current_count > 0:
+                    st.markdown(f'<div class="count-display"><span class="count-number">{current_count}</span></div>', unsafe_allow_html=True)
+            
+            with add_col:
+                if st.button("➕", key=f"add_{dish['id']}", help="增加"):
+                    add_to_cart(dish["id"])
+                    st.rerun()
+            
+            st.markdown('</div>', unsafe_allow_html=True)
+      
         st.markdown('</div>', unsafe_allow_html=True)
 
 # --- 底部固定购物车栏 ---
@@ -711,7 +706,6 @@ total_price, total_count = get_cart_total()
 st.markdown('<div class="cart-bar-container">', unsafe_allow_html=True)
 cart_left_col, cart_btn_col = st.columns([4, 1])
 
-# 左侧购物车信息
 with cart_left_col:
     if total_count > 0:
         st.markdown(f"""
@@ -740,7 +734,6 @@ with cart_left_col:
         </div>
         """, unsafe_allow_html=True)
 
-# 右侧去结算按钮
 with cart_btn_col:
     if total_count > 0:
         if st.button("去结算", use_container_width=True):
