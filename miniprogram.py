@@ -114,6 +114,8 @@ st.markdown("""
         overflow: hidden;
         height: 100%;
         border: 1px solid #fff0e6;
+        display: flex;
+        flex-direction: column;
     }
     .dish-card:hover {
         transform: translateY(-8px) scale(1.02);
@@ -124,35 +126,44 @@ st.markdown("""
         height: 200px;
         overflow: hidden;
         border-bottom: 2px solid #fff0e6;
+        flex-shrink: 0;
     }
     .dish-img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         transition: transform 0.5s ease;
+        display: block;
     }
     .dish-card:hover .dish-img {
         transform: scale(1.1);
     }
     .dish-info {
         padding: 1.3rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        text-align: left;
     }
     .dish-name {
         font-size: 1.25rem;
         font-weight: 700;
         color: #3e2723;
         margin: 0 0 0.5rem 0;
+        text-align: left;
     }
     .dish-desc {
         font-size: 0.88rem;
         color: #795548;
         margin: 0 0 1rem 0;
         line-height: 1.5;
+        text-align: left;
     }
     .dish-bottom {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        margin-bottom: 1rem;
     }
     .price-tag {
         color: #d32f2f;
@@ -197,26 +208,25 @@ st.markdown("""
         outline: none !important;
     }
 
-    /* 【核心修复】按钮行容器 - 强制水平布局 */
-    .btn-row-wrapper {
+    /* 【核心修复】按钮行容器 - 使用原生 flexbox */
+    .btn-row-container {
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
         gap: 2.5rem !important;
         width: 100% !important;
         flex-wrap: nowrap !important;
-        margin-top: 1rem !important;
-        flex-direction: row !important;
+        margin-top: 1rem;
+        padding: 0 !important;
     }
 
-    /* Streamlit 列的覆盖 - 强制横向布局 */
-    .btn-row-wrapper > div[data-testid="column"] {
+    /* 减少按钮容器 */
+    .btn-item {
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        flex: 0 1 auto !important;
+        flex: 0 0 auto !important;
         width: auto !important;
-        flex-shrink: 0 !important;
     }
 
     /* 数字显示容器 */
@@ -226,7 +236,7 @@ st.markdown("""
         justify-content: center !important;
         width: 20px !important;
         height: 20px !important;
-        flex-shrink: 0 !important;
+        flex: 0 0 20px !important;
     }
 
     /* 菜品数量 */
@@ -238,7 +248,7 @@ st.markdown("""
         padding: 0 !important;
         line-height: 1 !important;
         white-space: nowrap !important;
-        display: inline-block !important;
+        display: block !important;
     }
   
     /* ============= 【修复】侧边栏字体 ============= */
@@ -401,48 +411,58 @@ st.markdown("""
             padding: 0.5rem 1rem;
         }
         [data-testid="column"] {
-            flex: 1 1 45% !important;
-            max-width: 45% !important;
+            flex: 1 1 100% !important;
+            max-width: 100% !important;
+        }
+        .dish-card {
+            flex-direction: row !important;
         }
         .dish-img-container {
-            height: 140px;
+            width: 35% !important;
+            height: auto !important;
+            min-height: 120px !important;
+            flex-shrink: 0 !important;
         }
         .dish-info {
-            padding: 1rem;
+            width: 65% !important;
+            padding: 1rem !important;
+            text-align: left !important;
         }
         .dish-name {
-            font-size: 1rem;
+            font-size: 1rem !important;
+            text-align: left !important;
         }
         .dish-desc {
-            font-size: 0.75rem;
+            font-size: 0.75rem !important;
+            text-align: left !important;
+            margin-bottom: 0.5rem !important;
         }
         .price-tag {
-            font-size: 1.1rem;
+            font-size: 1.1rem !important;
+        }
+        .dish-bottom {
+            margin-bottom: 0.8rem !important;
         }
         
-        /* 【手机端核心修复】强制按钮行水平布局 */
-        .btn-row-wrapper {
+        /* 【手机端核心修复】按钮行必须保持水平 */
+        .btn-row-container {
             display: flex !important;
+            flex-direction: row !important;
             align-items: center !important;
             justify-content: center !important;
-            gap: 2rem !important;
+            gap: 1.5rem !important;
             width: 100% !important;
             flex-wrap: nowrap !important;
-            flex-direction: row !important;
-            margin-top: 1rem !important;
+            margin-top: 0.5rem !important;
+            padding: 0 !important;
         }
         
-        .btn-row-wrapper > div[data-testid="column"] {
+        .btn-item {
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
             flex: 0 0 auto !important;
             width: auto !important;
-            max-width: none !important;
-            min-width: auto !important;
-            padding-right: 0 !important;
-            padding-left: 0 !important;
-            flex-shrink: 0 !important;
         }
         
         button[data-testid^="baseButton-reduce_"],
@@ -458,6 +478,7 @@ st.markdown("""
         .count-display {
             width: 18px !important;
             height: 18px !important;
+            flex: 0 0 18px !important;
         }
         .count-number {
             font-size: 1rem !important;
@@ -681,33 +702,43 @@ for idx, dish in enumerate(current_dishes):
             <div class="dish-bottom">
                 <span class="price-tag">¥{dish['price']}</span>
             </div>
-        </div>
         """, unsafe_allow_html=True)
       
-        # 【核心修复】按钮行 - 使用 HTML div 强制水平布局
+        # 【核心修复】按钮行 - 使用纯 HTML div 实现
         current_count = st.session_state.cart.get(dish["id"], 0)
         
-        st.markdown('<div class="btn-row-wrapper">', unsafe_allow_html=True)
+        st.markdown('<div class="btn-row-container">', unsafe_allow_html=True)
         
-        btn_cols = st.columns([1, 1, 1])
-        
-        with btn_cols[0]:
-            if current_count > 0:
-                if st.button("➖", key=f"reduce_{dish['id']}", help="减少"):
-                    reduce_from_cart(dish["id"])
-                    st.rerun()
-        
-        with btn_cols[1]:
-            if current_count > 0:
-                st.markdown(f'<div class="count-display"><span class="count-number">{current_count}</span></div>', unsafe_allow_html=True)
-        
-        with btn_cols[2]:
+        # 使用原生 HTML 来包装按钮，不使用 Streamlit 的列
+        if current_count > 0:
+            st.markdown('<div class="btn-item">', unsafe_allow_html=True)
+            if st.button("➖", key=f"reduce_{dish['id']}", help="减少"):
+                reduce_from_cart(dish["id"])
+                st.rerun()
+            st.markdown('</div>', unsafe_allow_html=True)
+            
+            st.markdown(f'<div class="btn-item"><div class="count-display"><span class="count-number">{current_count}</span></div></div>', unsafe_allow_html=True)
+            
+            st.markdown('<div class="btn-item">', unsafe_allow_html=True)
             if st.button("➕", key=f"add_{dish['id']}", help="增加"):
                 add_to_cart(dish["id"])
                 st.rerun()
+            st.markdown('</div>', unsafe_allow_html=True)
+        else:
+            st.markdown('<div class="btn-item">', unsafe_allow_html=True)
+            st.markdown('<div style="visibility: hidden;">➖</div>', unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
+            
+            st.markdown('<div class="btn-item"><div class="count-display"></div></div>', unsafe_allow_html=True)
+            
+            st.markdown('<div class="btn-item">', unsafe_allow_html=True)
+            if st.button("➕", key=f"add_{dish['id']}", help="增加"):
+                add_to_cart(dish["id"])
+                st.rerun()
+            st.markdown('</div>', unsafe_allow_html=True)
         
         st.markdown('</div>', unsafe_allow_html=True)
-      
+        st.markdown('</div>', unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
 # --- 底部固定购物车栏 ---
