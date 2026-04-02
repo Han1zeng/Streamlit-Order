@@ -178,6 +178,18 @@ st.markdown("""
         flex-wrap: nowrap !important;
     }
 
+    /* 强制数量控制器内三列始终水平等分，不堆叠 */
+    .qty-controller [data-testid="column"] {
+        flex: 1 1 33.333% !important;
+        max-width: 33.333% !important;
+        width: 33.333% !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
     /* 数量显示 - 居中 */
     .qty-number {
         font-size: 1.3rem !important;
@@ -399,8 +411,8 @@ st.markdown("""
             padding: 0.5rem 1rem;
         }
         
-        /* 手机端菜品卡片 - 垂直布局，居中对齐 */
-        [data-testid="column"] {
+        /* 手机端菜品卡片 - 垂直布局，居中对齐（仅作用于菜品外层列，不影响数量控制器） */
+        .dish-list-container > [data-testid="column"] {
             flex: 1 1 100% !important;
             max-width: 100% !important;
         }
@@ -438,7 +450,7 @@ st.markdown("""
             display: block !important;
         }
         
-        /* 【手机端核心】数量控制器 - 强制水平布局 */
+        /* 【手机端核心】强制数量控制器三列水平排列，永不堆叠 */
         .qty-controller {
             display: flex !important;
             flex-direction: row !important;
@@ -450,14 +462,14 @@ st.markdown("""
             flex-wrap: nowrap !important;
         }
 
-        .qty-controller > div[data-testid="column"] {
+        .qty-controller [data-testid="column"] {
+            flex: 1 1 33.333% !important;
+            max-width: 33.333% !important;
+            width: 33.333% !important;
             display: inline-flex !important;
-            flex: 0 0 auto !important;
-            width: auto !important;
-            min-width: 0 !important;
-            padding: 0 0.5rem !important;
-            justify-content: center !important;
             align-items: center !important;
+            justify-content: center !important;
+            padding: 0 0.25rem !important;
         }
 
         .qty-controller .stButton {
@@ -510,7 +522,7 @@ st.markdown("""
     }
 
     @media only screen and (min-width: 768px) and (max-width: 1024px) {
-        [data-testid="column"] {
+        .dish-list-container > [data-testid="column"] {
             flex: 1 1 30% !important;
             max-width: 30% !important;
         }
@@ -662,6 +674,8 @@ current_dishes = [d for d in DISHES if d["category_id"] == current_category["id"
 
 st.markdown(f'<h2 class="category-title">{current_category["name"]}</h2>', unsafe_allow_html=True)
 
+# 新增菜品列表容器，用于限定CSS作用范围，不影响内部数量控制器
+st.markdown('<div class="dish-list-container">', unsafe_allow_html=True)
 cols = st.columns(4)
 for idx, dish in enumerate(current_dishes):
     with cols[idx % 4]:
@@ -700,6 +714,7 @@ for idx, dish in enumerate(current_dishes):
         
         st.markdown('</div>', unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
 
 # --- 底部固定购物车栏 ---
 total_price, total_count = get_cart_total()
