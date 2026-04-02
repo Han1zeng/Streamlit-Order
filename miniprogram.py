@@ -9,7 +9,13 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ====================== 2. 核心功能函数（优先加载，保证点击响应） ======================
+# ====================== 2. 购物车状态初始化（优先加载，保证功能正常） ======================
+if 'cart' not in st.session_state:
+    st.session_state.cart = {}
+if 'selected_category' not in st.session_state:
+    st.session_state.selected_category = "🔥 招牌必点"
+
+# ====================== 3. 核心功能函数 ======================
 def add_to_cart(dish_id):
     if dish_id in st.session_state.cart:
         st.session_state.cart[dish_id] += 1
@@ -45,30 +51,7 @@ def submit_order():
         time.sleep(2)
         st.rerun()
 
-# ====================== 3. 状态初始化与点击事件处理（页面最前端，保证响应） ======================
-# 购物车状态初始化
-if 'cart' not in st.session_state:
-    st.session_state.cart = {}
-if 'selected_category' not in st.session_state:
-    st.session_state.selected_category = "🔥 招牌必点"
-
-# 【核心】处理HTML按钮的点击事件，通过URL参数传递动作
-query_params = st.query_params
-if 'action' in query_params and 'dish_id' in query_params:
-    action = query_params['action']
-    try:
-        dish_id = int(query_params['dish_id'])
-        if action == 'add':
-            add_to_cart(dish_id)
-        elif action == 'minus':
-            reduce_from_cart(dish_id)
-    except:
-        pass
-    # 处理完成后清空参数，刷新页面
-    st.query_params.clear()
-    st.rerun()
-
-# ====================== 4. 样式精准修复（纯HTML控制器专属，保证一行布局） ======================
+# ====================== 4. 样式精准修复（核心：CSS作用域精准限定，解决换行问题） ======================
 st.markdown("""
 <style>
     /* 全局背景与基础样式 */
@@ -225,55 +208,32 @@ st.markdown("""
         margin-bottom: 1rem;
     }
 
-    /* ============= 【核心】纯HTML数量控制器 - 绝对一行布局，全端生效 ============= */
-    .qty-controller-html {
+    /* ============= 【核心】数量控制器 - 强制水平排列，全端永不换行 ============= */
+    .qty-controller {
         display: flex !important;
         flex-direction: row !important;
         align-items: center !important;
         justify-content: center !important;
-        gap: 0 !important;
         width: 100% !important;
         padding: 0.5rem 0 1rem 0 !important;
         flex-wrap: nowrap !important; /* 强制不换行，核心属性 */
-        flex-shrink: 0;
     }
 
-    .qty-btn-html {
-        width: 40px !important;
-        height: 40px !important;
-        min-width: 40px !important;
-        min-height: 40px !important;
-        max-width: 40px !important;
-        max-height: 40px !important;
-        border-radius: 50% !important;
-        padding: 0 !important;
-        margin: 0 8px !important;
-        font-size: 1.3rem !important;
-        font-weight: 600 !important;
+    /* 【关键】仅作用于数量控制器内的列，强制3等分水平排列，优先级最高 */
+    .qty-controller [data-testid="column"] {
+        flex: 0 0 33.333% !important;
+        max-width: 33.333% !important;
+        width: 33.333% !important;
         display: inline-flex !important;
         align-items: center !important;
         justify-content: center !important;
-        line-height: 1 !important;
-        background: linear-gradient(135deg, #ff7e42 0%, #ff9a56 100%) !important;
-        color: #fff !important;
-        border: none !important;
-        box-shadow: 0 3px 10px rgba(255, 126, 66, 0.3) !important;
-        cursor: pointer !important;
-        transition: all 0.3s ease !important;
-        flex-shrink: 0;
+        padding: 0 !important;
+        margin: 0 !important;
+        flex-wrap: nowrap !important;
     }
 
-    .qty-btn-html:hover {
-        transform: scale(1.1) !important;
-        background: linear-gradient(135deg, #ff6333 0%, #ff451a 100%) !important;
-        box-shadow: 0 5px 15px rgba(255, 126, 66, 0.4) !important;
-    }
-
-    .qty-btn-html:active {
-        transform: scale(0.95) !important;
-    }
-
-    .qty-number-html {
+    /* 数量显示 - 居中对齐 */
+    .qty-number {
         font-size: 1.4rem !important;
         font-weight: 700 !important;
         color: #3e2723 !important;
@@ -286,7 +246,40 @@ st.markdown("""
         justify-content: center !important;
         margin: 0 !important;
         padding: 0 !important;
-        flex-shrink: 0;
+    }
+
+    /* 加减按钮样式，完全保留你喜欢的风格 */
+    .qty-controller .stButton > button {
+        width: 40px !important;
+        height: 40px !important;
+        min-width: 40px !important;
+        min-height: 40px !important;
+        max-width: 40px !important;
+        max-height: 40px !important;
+        border-radius: 50% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        font-size: 1.3rem !important;
+        font-weight: 600 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        line-height: 1 !important;
+        background: linear-gradient(135deg, #ff7e42 0%, #ff9a56 100%) !important;
+        color: #fff !important;
+        border: none !important;
+        box-shadow: 0 3px 10px rgba(255, 126, 66, 0.3) !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .qty-controller .stButton > button:hover {
+        transform: scale(1.1) !important;
+        background: linear-gradient(135deg, #ff6333 0%, #ff451a 100%) !important;
+        box-shadow: 0 5px 15px rgba(255, 126, 66, 0.4) !important;
+    }
+
+    .qty-controller .stButton > button:active {
+        transform: scale(0.95) !important;
     }
   
     /* ============= 侧边栏样式 ============= */
@@ -447,8 +440,8 @@ st.markdown("""
             padding: 0.5rem 1rem;
         }
         
-        /* 手机端菜品卡片 - 垂直布局，居中对齐 */
-        [data-testid="column"] {
+        /* 【关键】仅让菜品卡片的外层列在手机端换行，不影响数量控制器 */
+        .dish-grid-container > [data-testid="column"] {
             flex: 1 1 100% !important;
             max-width: 100% !important;
         }
@@ -514,7 +507,8 @@ st.markdown("""
     }
 
     @media only screen and (min-width: 768px) and (max-width: 1024px) {
-        [data-testid="column"] {
+        /* 平板端仅让菜品卡片的外层列换行，不影响数量控制器 */
+        .dish-grid-container > [data-testid="column"] {
             flex: 1 1 30% !important;
             max-width: 30% !important;
         }
@@ -624,6 +618,8 @@ current_dishes = [d for d in DISHES if d["category_id"] == current_category["id"
 
 st.markdown(f'<h2 class="category-title">{current_category["name"]}</h2>', unsafe_allow_html=True)
 
+# 【关键】给菜品外层列加专属容器，限定CSS作用域
+st.markdown('<div class="dish-grid-container">', unsafe_allow_html=True)
 cols = st.columns(4)
 for idx, dish in enumerate(current_dishes):
     with cols[idx % 4]:
@@ -642,16 +638,23 @@ for idx, dish in enumerate(current_dishes):
         
         current_count = st.session_state.cart.get(dish["id"], 0)
         
-        # ====================== 【核心】纯HTML数量控制器，绝对一行，无任何Streamlit按钮 ======================
-        st.markdown(f"""
-        <div class="qty-controller-html">
-            <button class="qty-btn-html" onclick="window.location.href = window.location.pathname + '?action=minus&dish_id={dish['id']}'">➖</button>
-            <div class="qty-number-html">{current_count}</div>
-            <button class="qty-btn-html" onclick="window.location.href = window.location.pathname + '?action=add&dish_id={dish['id']}'">➕</button>
-        </div>
-        """, unsafe_allow_html=True)
+        # ====================== 【核心】原生按钮数量控制器，永远一行 ======================
+        st.markdown('<div class="qty-controller">', unsafe_allow_html=True)
+        col_minus, col_num, col_plus = st.columns(3)
+        with col_minus:
+            if st.button("➖", key=f"minus_{dish['id']}"):
+                reduce_from_cart(dish["id"])
+                st.rerun()
+        with col_num:
+            st.markdown(f'<div class="qty-number">{current_count}</div>', unsafe_allow_html=True)
+        with col_plus:
+            if st.button("➕", key=f"plus_{dish['id']}"):
+                add_to_cart(dish["id"])
+                st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
         
         st.markdown('</div>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
 
 # --- 底部固定购物车栏 ---
 total_price, total_count = get_cart_total()
